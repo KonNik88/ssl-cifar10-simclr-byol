@@ -66,10 +66,13 @@ conda activate ssl_env
 **Option B: pip**
 ```bash
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# Linux/Mac:
-source .venv/bin/activate
+
+# Windows (PowerShell):
+.\.venv\Scripts\Activate.ps1
+# Windows (cmd):
+.venv\Scripts\activate.bat
+# Git Bash:
+source .venv/Scripts/activate
 
 pip install -r requirements.txt
 ```
@@ -133,7 +136,6 @@ This notebook reproduces:
 ## Project structure
 
 ```
-D:\ML\SSL
 ├── artifacts/
 │   ├── checkpoints/
 │   ├── embeddings/
