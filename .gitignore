@@ -1,0 +1,104 @@
+# =========================
+# OS / IDE
+# =========================
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.swp
+*~
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+
+# Conda
+.conda/
+conda-bld/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# =========================
+# Packaging / build
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-log.txt
+
+# =========================
+# Logs / cache
+# =========================
+*.log
+logs/
+cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Lightning / training logs
+# =========================
+lightning_logs/
+**/lightning_logs/
+
+# =========================
+# Data (raw)
+# =========================
+# STL-10 downloads / extracted files
+data/
+**/data/
+
+
+# checkpoints (very large)
+artifacts/checkpoints/
+**/artifacts/checkpoints/
+
+# large embedding dumps
+artifacts/embeddings/
+**/artifacts/embeddings/
+*.npz
+*.npy
+
+# raw logs 
+artifacts/logs/
+**/artifacts/logs/
+
+artifacts/logs/
+**/artifacts/logs/
+
+# =========================
+# Model / exported artifacts
+# =========================
+*.ckpt
+*.pt
+*.pth
+*.onnx
+
+# =========================
+# Misc
+# =========================
+.env
+.env.*
+
+archive/*

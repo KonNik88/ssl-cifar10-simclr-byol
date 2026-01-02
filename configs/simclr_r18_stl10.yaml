@@ -1,0 +1,25 @@
+method: simclr
+
+seed: 42
+
+data:
+  data_dir: data
+  image_size: 96
+  batch_size: 128
+  num_workers: 4
+  pin_memory: true
+
+train:
+  epochs: 5
+  lr: 0.001
+  weight_decay: 0.0001
+  precision: 16-mixed
+
+simclr:
+  temperature: 0.2
+  proj_hidden_dim: 2048
+  proj_out_dim: 128
+  use_bn_in_head: true
+
+artifacts:
+  root_dir: artifacts

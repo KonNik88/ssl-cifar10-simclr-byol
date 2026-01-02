@@ -1,0 +1,3 @@
+run_id,method,timestamp,version_dir,metrics_csv,n_rows,last_epoch,train_loss_epoch,train_loss_step,max_epochs,batch_size,temperature,lr,train_loss_epoch_last,knn_k,knn_acc,linear_epochs,linear_acc,fewshot_shots,fewshot_acc,ckpt_last,ckpt_best,config_path
+simclr_version_0,simclr,2025-12-28T20:39:25,artifacts/logs/simclr/version_0,artifacts/logs/simclr/version_0/metrics.csv,200.0,4.0,2.268587827682495,2.3914718627929688,,,,,,,,,,,,,,
+simclr_version_4,simclr,,,,,,,,50.0,128.0,0.2,0.001,1.7463899850845337,20.0,0.7405,20.0,0.7360000610351562,,,artifacts/checkpoints/simclr/simclr_version_4/last.ckpt,artifacts/checkpoints/simclr/simclr_version_4/best.ckpt,configs/simclr_r18_stl10_strong.yaml

@@ -1,0 +1,3 @@
+run_id,method,timestamp,version_dir,metrics_csv,ckpt_last,ckpt_best,config_path,seed,max_epochs,batch_size,temperature,lr
+simclr_version_0,simclr,2025-12-28T20:39:25,artifacts/logs/simclr/version_0,artifacts/logs/simclr/version_0/metrics.csv,,,,,,,,
+simclr_version_4,simclr,,artifacts/logs/simclr/version_4,artifacts/logs/simclr/version_4/metrics.csv,artifacts/checkpoints/simclr/simclr_version_4/last.ckpt,artifacts/checkpoints/simclr/simclr_version_4/best.ckpt,configs/simclr_r18_stl10_strong.yaml,42.0,50.0,128.0,0.2,0.001

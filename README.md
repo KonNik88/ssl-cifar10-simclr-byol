@@ -1,98 +1,173 @@
-# Self-Supervised Learning on CIFAR-10 (SimCLR & BYOL)
+# Self-Supervised Learning on STL-10 (SimCLR) — Portfolio Project
 
-[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/pytorch-2.0+-red.svg)](https://pytorch.org/)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/pytorch-2.x-red.svg)](https://pytorch.org/)
+[![Lightning](https://img.shields.io/badge/lightning-2.x-792ee5.svg)](https://lightning.ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Minimal, portfolio-ready project to demonstrate **Self-Supervised Learning (SSL)** using **SimCLR** and **BYOL** on the CIFAR-10 dataset.  
-The project provides a clean and reproducible PyTorch pipeline with evaluation protocols and visualizations.
+A clean, reproducible **Self-Supervised Learning (SSL)** project that demonstrates **SimCLR** pretraining on **STL-10 unlabeled (100k images)** and evaluates learned representations with standard protocols:
+
+- **kNN@K** on frozen embeddings  
+- **Linear probe** (frozen encoder + linear classifier)  
+- **UMAP** visualization of embedding space  
+- **Nearest-neighbor retrieval** in embedding space (cosine similarity)
+
+This repo is designed to be **portfolio-ready**:
+- runs on a single GPU (e.g., RTX 2070),
+- produces structured artifacts (logs / checkpoints / metrics),
+- keeps training in scripts and analysis in notebooks.
 
 ---
 
-## What's inside
-- **Implementations** of SimCLR and BYOL in PyTorch (with PyTorch Lightning).
-- **Evaluation protocols:**
-  - Linear probe (frozen encoder + logistic regression / linear layer).
-  - k-NN monitor during training.
-  - Semi-supervised evaluation with limited labels.
-- **Visualizations:**
-  - UMAP/t-SNE plots of learned embeddings.
-  - Nearest neighbors retrieval with FAISS.
-  - Augmentation examples for CIFAR-10.
+## TL;DR (final results)
+
+**Strong SimCLR run:** `simclr_version_4` (50 epochs)
+
+- **kNN@20 accuracy:** **0.7405**
+- **Linear-probe accuracy (20 epochs):** **0.7360**
+
+All results are reproducible from artifacts in `artifacts/` and summarized in:
+- `artifacts/metrics/runs_index.csv`
+- `artifacts/metrics/summary.csv`
 
 ---
 
-## Getting Started
+## Project overview
 
-### 1. Clone the repo
+### Training (scripts)
+- Train SimCLR on **STL-10 unlabeled** using `src/train_ssl.py`
+- Logs go to `artifacts/logs/…`
+- Checkpoints go to `artifacts/checkpoints/…`
+- Run registry + aggregated metrics go to `artifacts/metrics/…`
+
+### Evaluation (scripts)
+- `src/eval_knn.py` — kNN on frozen embeddings (STL-10 train → test)
+- `src/eval_linear.py` — linear probe on frozen embeddings
+
+### Analysis (notebooks)
+- `01_augmentations_preview.ipynb` — why augmentations matter in SSL
+- `02_experiments_report_fixed.ipynb` — training curves / loss analysis
+- `03_umap_embeddings_fixed.ipynb` — compute embeddings + UMAP visualization
+- `04_retrieval_demo.ipynb` — nearest-neighbor retrieval + Hit@10 sanity check
+- `05_ssl_final_simclr.ipynb` — **final showcase** (all key results in one notebook)
+
+---
+
+## Quickstart
+
+### 1) Create environment
+
+**Option A: conda (recommended)**
 ```bash
-git clone https://github.com/KonNik88/ssl-cifar10-simclr-byol.git
-cd ssl-cifar10-simclr-byol
+conda env create -f environment.yml
+conda activate ssl_env
 ```
 
-### 2. Install dependencies
+**Option B: pip**
 ```bash
 python -m venv .venv
-source .venv/bin/activate        # (Linux/Mac)
-.venv\Scripts\activate           # (Windows)
+# Windows:
+.venv\Scripts\activate
+# Linux/Mac:
+source .venv/bin/activate
 
 pip install -r requirements.txt
 ```
 
-### 3. Train a model
-Run SimCLR with ResNet-18 backbone:
+---
+
+## Run: training → evaluation → final notebook
+
+### 2) Train SimCLR (strong config)
+
 ```bash
-python -m src.train_ssl --config configs/simclr_resnet18.yaml
+python -m src.train_ssl --config configs/simclr_r18_stl10_strong.yaml
 ```
 
-Run BYOL with ResNet-18 backbone:
+This will create:
+- `artifacts/logs/simclr/version_X/metrics.csv`
+- `artifacts/checkpoints/simclr/simclr_version_X/{last.ckpt,best.ckpt}`
+- update `artifacts/metrics/runs_index.csv` and `artifacts/metrics/summary.csv`
+
+### 3) Evaluate representation quality
+
+**kNN@20**
 ```bash
-python -m src.train_ssl --config configs/byol_resnet18.yaml
+python -m src.eval_knn --project-root . --k 20 --use best
 ```
 
-### 4. Evaluate
-- Linear probe:
+**Linear probe (20 epochs)**
 ```bash
-python -m src.eval_linear --ckpt artifacts/checkpoints/simclr_r18.pt
+python -m src.eval_linear --project-root . --epochs 20 --use best
 ```
 
-- k-NN:
-```bash
-python -m src.eval_knn --ckpt artifacts/checkpoints/byol_r18.pt
+After running these scripts, open:
+- `artifacts/metrics/summary.csv` (updated with `knn_acc` and `linear_acc`)
+
+### 4) Open final showcase notebook
+
+Run Jupyter and open:
+
+- `notebooks/05_ssl_final_simclr.ipynb`
+
+This notebook reproduces:
+- training curves (loss),
+- kNN + linear-probe metrics,
+- UMAP embeddings,
+- retrieval demo + Hit@10 sanity metric.
+
+---
+
+## Reproducibility notes
+
+- Paths are handled relative to the project root (`PROJECT_ROOT` in notebooks).
+- The repo stores:
+  - **checkpoints** (`best.ckpt`, `last.ckpt`)
+  - **metrics logs** (`metrics.csv`)
+  - **run registry** (`runs_index.csv`)
+  - **aggregated summary** (`summary.csv`)
+- Notebooks are analysis-only: they **do not train** models.
+
+---
+
+## Project structure
+
+```
+D:\ML\SSL
+├── artifacts/
+│   ├── checkpoints/
+│   ├── embeddings/
+│   ├── figures/
+│   ├── logs/
+│   └── metrics/
+├── configs/
+├── data/
+├── lightning_logs/          # optional (legacy Lightning dir if used)
+├── notebooks/
+└── src/
+    ├── data/
+    ├── losses/
+    ├── models/
+    └── utils/
 ```
 
 ---
 
-## Results (expected)
-- SSL improves representation quality compared to random initialization.
-- Linear probe achieves significantly higher accuracy than supervised baselines with limited labels.
-- Embedding space clusters semantically similar images (see UMAP plots).
+## Future work (optional)
 
-*(Detailed results, tables, and figures will be added after experiments.)*
+- Add **BYOL** (non-contrastive SSL) and compare side-by-side with the same metrics (kNN + linear probe + UMAP + retrieval).
+- Add FAISS indexing for large-scale retrieval (engineering upgrade; not required for this portfolio version).
 
 ---
 
-## Project Structure
-```
-.
-├─ configs/           # YAML configs for experiments
-├─ src/               # Source code (data, models, training, evaluation)
-├─ notebooks/         # Visualization and analysis
-├─ artifacts/         # Saved checkpoints, logs, metrics
-├─ requirements.txt
-├─ README.md
-├─ LICENSE
-└─ .gitignore
-```
+## References
+
+- **SimCLR**: Chen et al., 2020 — *A Simple Framework for Contrastive Learning of Visual Representations*  
+- **STL-10** dataset: Coates et al., 2011  
+- **PyTorch Lightning** for clean training loops
 
 ---
 
 ## License
+
 MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-## Acknowledgements
-- [SimCLR paper (Chen et al., 2020)](https://arxiv.org/abs/2002.05709)  
-- [BYOL paper (Grill et al., 2020)](https://arxiv.org/abs/2006.07733)  
-- [PyTorch Lightning](https://lightning.ai/) for clean training loops.
